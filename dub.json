@@ -1,0 +1,10 @@
+{
+	"name": "spate",
+	"description": "Spate Palette and Theme Editor",
+	"copyright": "Copyright © 2014, David Osborne",
+	"authors": ["David Osborne"],
+	"dependencies": {
+        "kdaf" : "~master",
+        "gtk-d" : "~>1.7"
+	}
+}
