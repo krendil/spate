@@ -18,24 +18,41 @@ public:
         commandBus.subscribe(&onAddTag);
         commandBus.subscribe(&onRemoveTag);
         commandBus.subscribe(&onChangeName);
+        commandBus.subscribe(&onChangeHsv);
     }
 
 private:
 
     void onChangeColour(Colour.ChangeColour cmd) {
-        cmd.colour[cmd.component] = cmd.to;
+        cmd.outer[cmd.component] = cmd.to;
     }
 
     void onAddTag(Colour.AddTag cmd) {
-        cmd.colour.addTag(cmd.tag);
+        cmd.outer.addTag(cmd.tag);
     }
 
     void onRemoveTag(Colour.RemoveTag cmd) {
-        cmd.colour.removeTag(cmd.tag);
+        cmd.outer.removeTag(cmd.tag);
     }
 
     void onChangeName(Colour.ChangeName cmd) {
-        cmd.colour.name = cmd.to;
+        cmd.outer.name = cmd.to;
+    }
+
+    void onChangeHsv(Colour.ChangeHsv cmd) {
+        switch(cmd.component) {
+            case 'h':
+                cmd.outer.h = cmd.to;
+                break;
+            case 's':
+                cmd.outer.s = cmd.to;
+                break;
+            case 'v':
+                cmd.outer.v = cmd.to;
+                break;
+            default:
+                break;
+        }
     }
 
 

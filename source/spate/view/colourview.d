@@ -7,6 +7,8 @@ import cairo.Context;
 
 import gtk.Builder;
 import gtk.DrawingArea;
+import gtk.EditableIF;
+import gtk.Entry;
 import gtk.SpinButton;
 import gtk.VBox;
 import gtk.Widget;
@@ -27,6 +29,10 @@ private:
 		SpinButton redSpin;
 		SpinButton greenSpin;
 		SpinButton blueSpin;
+        Entry hexEntry;
+		SpinButton hueSpin;
+		SpinButton satSpin;
+		SpinButton valSpin;
 	}
 
 public:
@@ -39,9 +45,16 @@ public:
 		buildFromGlade();
 
 		colourBox.addOnExpose(&onDrawColourBox);
-		redSpin.addOnValueChanged(&onSpinValueChanged!0);
-		greenSpin.addOnValueChanged(&onSpinValueChanged!1);
-		blueSpin.addOnValueChanged(&onSpinValueChanged!2);
+		redSpin.addOnValueChanged(&onRgbValueChanged!0);
+		greenSpin.addOnValueChanged(&onRgbValueChanged!1);
+		blueSpin.addOnValueChanged(&onRgbValueChanged!2);
+        hexEntry.addOnChanged(&onHexChanged);
+
+        hueSpin.addOnValueChanged(&onHsvValueChanged!'h');
+        satSpin.addOnValueChanged(&onHsvValueChanged!'s');
+        valSpin.addOnValueChanged(&onHsvValueChanged!'v');
+
+        commandBus.subscribe(&onColourSelected);
 	}
 
 	
@@ -52,10 +65,15 @@ public:
 		_colour = c;
 		if( c !is null) {
 			_colour.onChange.connect(&onColourChange);
+            onColourChange();
 		}
 	}
 
 private:
+
+    void onColourSelected(SelectColour cmd) {
+        this.colour = cmd.to;
+    }
 
 	bool onDrawColourBox(GdkEventExpose* event, Widget self)
 	{
@@ -71,9 +89,22 @@ private:
 		redSpin.setValue(_colour.r);
 		greenSpin.setValue(_colour.g);
 		blueSpin.setValue(_colour.b);
+        hexEntry.setText(_colour.hex);
+
+        hueSpin.setValue(_colour.h);
+        satSpin.setValue(_colour.s);
+        valSpin.setValue(_colour.v);
 	}
 
-	void onSpinValueChanged(size_t field)(SpinButton self) {
-		commandBus.send(new Colour.ChangeColour(_colour, field, _colour[field], cast(ubyte) self.getValueAsInt()));
+	void onRgbValueChanged(size_t field)(SpinButton self) {
+		commandBus.send(_colour.new ChangeColour(field, _colour[field], cast(ubyte) self.getValueAsInt()));
 	}
+
+	void onHsvValueChanged(char field)(SpinButton self) {
+		commandBus.send(_colour.new ChangeHsv(field, mixin("_colour."~field), self.getValue()));
+	}
+
+    void onHexChanged(EditableIF e) {
+        commandBus.send(_colour.new ChangeHex(_colour.hex, hexEntry.getText()));
+    }
 }
