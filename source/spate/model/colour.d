@@ -10,8 +10,8 @@ import std.regex;
 import std.string;
 
 import kdaf.bus;
+import kdaf.model;
 import spate.types;
-import spate.model.model;
 
 Hsv rgb2hsv(const ubyte[3] rgb) {
 
@@ -221,7 +221,7 @@ public:
         if(_rgb[idx] != value) {
             _rgb[idx] = value;
             _hsv = rgb2hsv(_rgb);
-            onChange.emit();
+            _onChange.emit();
         }
     }
 
@@ -242,17 +242,17 @@ public:
     void h(double h) {
         _hsv.Hue = h;
         _rgb = hsv2rgb(_hsv);
-        onChange.emit();
+        _onChange.emit();
     }
     void s(double s) {
         _hsv.Sat = s / 100.0;
         _rgb = hsv2rgb(_hsv);
-        onChange.emit();
+        _onChange.emit();
     }
     void v(double v) {
         _hsv.Val = v / 100.0;
         _rgb = hsv2rgb(_hsv);
-        onChange.emit();
+        _onChange.emit();
     }
 
     void hex(string h) {
@@ -280,24 +280,24 @@ public:
 
         _hsv = rgb2hsv(_rgb);
 
-        onChange.emit();
+        _onChange.emit();
     }
 
     string name () { return _name; }
-    void name(string value) { _name = value; onChange.emit(); }
+    void name(string value) { _name = value; _onChange.emit(); }
 
     auto tags() { return _tags[]; }
 
     void addTag(string tag) {
         if( ! (tag in _tags)) {
             _tags.insert(tag);
-            onChange.emit();
+            _onChange.emit();
         }
     }
 
     void removeTag(string tag) {
         if(_tags.removeKey(tag)) {
-            onChange.emit();
+            _onChange.emit();
         }
     }
 
@@ -412,16 +412,14 @@ class SelectColour : ICommand {
     mixin Command;
 
     public:
-    Colour from;
-    Colour to;
+    Colour colour;
 
-    this(Colour from, Colour to) {
-        this.from = from;
-        this.to = to;
+    this(Colour colour) {
+        this.colour = colour;
     }
 
     ICommand inverse() {
-        return new SelectColour(to, from);
+        return new NullCommand;
     }
 }
 

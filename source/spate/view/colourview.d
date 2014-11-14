@@ -26,10 +26,14 @@ private:
 
 	@GtkChild {
 		DrawingArea colourBox;
+
+        Entry nameEntry;
+
+        Entry hexEntry;
 		SpinButton redSpin;
 		SpinButton greenSpin;
 		SpinButton blueSpin;
-        Entry hexEntry;
+
 		SpinButton hueSpin;
 		SpinButton satSpin;
 		SpinButton valSpin;
@@ -44,11 +48,14 @@ public:
 		this.commandBus = commandBus;
 		buildFromGlade();
 
+        nameEntry.addOnChanged(&onNameChanged);
+
 		colourBox.addOnExpose(&onDrawColourBox);
+
+        hexEntry.addOnChanged(&onHexChanged);
 		redSpin.addOnValueChanged(&onRgbValueChanged!0);
 		greenSpin.addOnValueChanged(&onRgbValueChanged!1);
 		blueSpin.addOnValueChanged(&onRgbValueChanged!2);
-        hexEntry.addOnChanged(&onHexChanged);
 
         hueSpin.addOnValueChanged(&onHsvValueChanged!'h');
         satSpin.addOnValueChanged(&onHsvValueChanged!'s');
@@ -60,11 +67,11 @@ public:
 	
 	void colour(Colour c) {
 		if(_colour !is null) {
-			_colour.onChange.disconnect(&onColourChange);
+			_colour.onChange.disconnect!"onColourChange"(this);
 		}
 		_colour = c;
 		if( c !is null) {
-			_colour.onChange.connect(&onColourChange);
+			_colour.onChange.connect!"onColourChange"(this);
             onColourChange();
 		}
 	}
@@ -72,7 +79,7 @@ public:
 private:
 
     void onColourSelected(SelectColour cmd) {
-        this.colour = cmd.to;
+        this.colour = cmd.colour;
     }
 
 	bool onDrawColourBox(GdkEventExpose* event, Widget self)
@@ -86,15 +93,31 @@ private:
 
 	void onColourChange() {
 		colourBox.queueDraw();
+
+        if(_colour.name.length == 0) {
+            nameEntry.setText("");
+        } else {
+            nameEntry.setText(_colour.name);
+        }
+
+        hexEntry.setText(_colour.hex);
+
 		redSpin.setValue(_colour.r);
 		greenSpin.setValue(_colour.g);
 		blueSpin.setValue(_colour.b);
-        hexEntry.setText(_colour.hex);
 
         hueSpin.setValue(_colour.h);
         satSpin.setValue(_colour.s);
         valSpin.setValue(_colour.v);
 	}
+
+    void onNameChanged(EditableIF e) {
+        commandBus.send(_colour.new ChangeName(_colour.name, nameEntry.getText()));
+    }
+
+    void onHexChanged(EditableIF e) {
+        commandBus.send(_colour.new ChangeHex(_colour.hex, hexEntry.getText()));
+    }
 
 	void onRgbValueChanged(size_t field)(SpinButton self) {
 		commandBus.send(_colour.new ChangeColour(field, _colour[field], cast(ubyte) self.getValueAsInt()));
@@ -104,7 +127,4 @@ private:
 		commandBus.send(_colour.new ChangeHsv(field, mixin("_colour."~field), self.getValue()));
 	}
 
-    void onHexChanged(EditableIF e) {
-        commandBus.send(_colour.new ChangeHex(_colour.hex, hexEntry.getText()));
-    }
 }

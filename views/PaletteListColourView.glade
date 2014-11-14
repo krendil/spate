@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkHandleBox" id="root">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="events">GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
+    <child>
+      <object class="GtkHBox" id="hbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkDrawingArea" id="colourBox">
+            <property name="width_request">50</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="nameLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="yalign">1</property>
+                <property name="xpad">6</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="hexLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+                <property name="xpad">6</property>
+                <property name="label" translatable="yes">label</property>
+                <attributes>
+                  <attribute name="style" value="oblique"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="tagsLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">tags
+tags
+tags</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

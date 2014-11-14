@@ -5,6 +5,7 @@
 	"authors": ["David Osborne"],
 	"dependencies": {
         "kdaf" : "~master",
-        "gtk-d" : "~>1.7"
+        "gtk-d" : "==1.7.4",
+        "phobosx" : "~master"
 	}
 }

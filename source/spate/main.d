@@ -8,6 +8,7 @@ import gtk.Button;
 import gtk.HBox;
 import gtk.Main;
 import gtk.Paned;
+import gtk.HPaned;
 import gtk.VPaned;
 import gtk.Label;
 import gtk.Widget;
@@ -17,8 +18,11 @@ import gobject.Type;
 
 import kdaf.bus;
 import spate.model.colour;
+import spate.model.palette;
 import spate.view.colourview;
+import spate.view.palettelistview;
 import spate.controller.colourcontroller;
+import spate.controller.palettecontroller;
 
 void show()
 {
@@ -44,12 +48,26 @@ void show()
 
     auto bus = new Bus();
 
+    auto c = new Colour(255, 0, 0);
     auto cv = new ColourView(bus);
     auto cc = new ColourController(bus);
-    cv.colour = new Colour(255, 0, 0);
+    cv.colour = c;
+
+    auto pal = new Palette("Test Palette");
+    pal.addColour(c);
+    auto pc = new PaletteController(bus);
+
+    auto plv = new PaletteListView(bus);
+    plv.palette = pal;
 
     ObjectG object = g.getObject("vpaned1");
     Paned vpaned1 = cast(Paned) object;
     vpaned1.add2(cv);
+
+    object = g.getObject("hpaned1");
+    Paned hpaned1 = cast(Paned) object;
+    hpaned1.add2(plv);
+
+
     w.showAll();
 }
