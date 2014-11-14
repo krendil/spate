@@ -5,3 +5,7 @@ __dummy.html
 *.obj
 .*.swp
 .*.swo
+*.selections.json
+*.userprefs
+spate
+__test__library__
